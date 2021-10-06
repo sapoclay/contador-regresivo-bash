@@ -1,5 +1,4 @@
 #!/bin/bash 
-#https://linuxconfig.org/time-countdown-bash-script-example 
 
 # Mensaje de error
  
