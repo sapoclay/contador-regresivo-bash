@@ -1,4 +1,5 @@
 #!/bin/bash 
+#https://linuxconfig.org/time-countdown-bash-script-example 
 
 # Mensaje de error
  
@@ -43,8 +44,8 @@ fi
 
 aument=0
 tmp=0
-col=`tput cols`
-col=$[ $col -5 ]
+colum=`tput cols`
+colum=$[ $colum -5 ]
 porcentaje=0
 tiempo_total=0
 
@@ -68,7 +69,7 @@ while [ $sec_m -gt 0 ]; do
 	semanas=`expr $interval / 604800` 
 
 	echo "... y queda hasta la fecha:" $(date -d@$fec_seg)
-	echo "===========================" 
+	echo "----------------------------" 
 	echo "Segundos: " $segundos 
 	echo "Minutos:  " $minutos 
 	echo "Horas:    " $horas 
@@ -86,14 +87,14 @@ while [ $sec_m -gt 0 ]; do
 	
 	printf -v f "%$(echo $aument)s>" ; printf "%s\n" "${f// /-}]"
 	
-	tput cup 7 $col
+	tput cup 7 $colum
 
 	tmp=$porcentaje
 	porcentaje=$[$progreso * 100 / $tiempo_total] 
 	porcentaje=$[$porcentaje]
 	change=$[$porcentaje - $tmp]
 
-	aument=$[ $col * $porcentaje / 100 ]
+	aument=$[ $colum * $porcentaje / 100 ]
 
 	printf "[%d%%]" $porcentaje
 	sleep 1
