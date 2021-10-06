@@ -68,7 +68,7 @@ while [ $sec_m -gt 0 ]; do
 	semanas=`expr $interval / 604800` 
 
 	echo "... y queda hasta la fecha:" $(date -d@$fec_seg)
-	echo "----------------------------" 
+	echo "===========================" 
 	echo "Segundos: " $segundos 
 	echo "Minutos:  " $minutos 
 	echo "Horas:    " $horas 
