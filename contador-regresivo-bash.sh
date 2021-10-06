@@ -1,4 +1,5 @@
 #!/bin/bash 
+#https://linuxconfig.org/time-countdown-bash-script-example 
 
 # Mensaje de error
  
@@ -12,15 +13,15 @@ if [ "$#" -lt "2" ] ; then
 fi 
 
 #fecha actual pasada a seg
-now=`date +%s` 
+ahora=`date +%s` 
 
 #Fecha completa introducida por el usuario 
 if [ "$1" = "-d" ] ; then 
-	until=`date -d "$2" +%s` 
-	sec_rem=`expr $until - $now` 
+	fec_seg=`date -d "$2" +%s` 
+	sec_m=`expr $fec_seg - $ahora` 
 
 	#ERROR
-	if [ $sec_rem -lt 1 ]; then 
+	if [ $sec_m -lt 1 ]; then 
 		echo "La fecha $2 ya ha pasado ..."
 		exit 1 
 	fi 
@@ -28,12 +29,12 @@ fi
 
 #Minutos introducidos por el usuario 
 if [ "$1" = "-m" ] ; then 
-	until=`expr 60 \* $2` 
-	until=`expr $until + $now` 
-	sec_rem=`expr $until - $now` 
+	fec_seg=`expr 60 \* $2` 
+	fec_seg=`expr $fec_seg + $ahora` 
+	sec_m=`expr $fec_seg - $ahora` 
 
 	#ERROR
-	if [ $sec_rem -lt 1 ]; then 
+	if [ $sec_m -lt 1 ]; then 
 		echo "La hora $2 ya ha pasado ... Vuelve a ejecutar el script y utiliza un número entero." 
 		exit 1
 	fi 
@@ -41,61 +42,61 @@ fi
  
  #Inicio varaiables para la barra de progreso
 
-_R=0
-_C=7
+aument=0
 tmp=0
-percent=0
-total_time=0
 col=`tput cols`
 col=$[ $col -5 ]
+porcentaje=0
+tiempo_total=0
 
 #Muestra y calculo de lo que aparece en pantalla
 
-while [ $sec_rem -gt 0 ]; do 
+while [ $sec_m -gt 0 ]; do 
 	clear 
 	
 	echo "Hoy es "$(date +%A)", "$(date +%d)" de "$(date +%B)" de "$(date +%Y)" a las "$(date +%H:%M:%S)
 
-	let sec_rem=$sec_rem-1 
-	interval=$sec_rem 
-	seconds=`expr $interval % 60` 
-	interval=`expr $interval - $seconds` 
-	minutes=`expr $interval % 3600 / 60` 
-	interval=`expr $interval - $minutes` 
-	hours=`expr $interval % 86400 / 3600` 
-	interval=`expr $interval - $hours` 
-	days=`expr $interval % 604800 / 86400` 
-	interval=`expr $interval - $hours` 
-	weeks=`expr $interval / 604800` 
+	let sec_m=$sec_m-1 
+	interval=$sec_m 
+	segundos=`expr $interval % 60` 
+	interval=`expr $interval - $segundos` 
+	minutos=`expr $interval % 3600 / 60` 
+	interval=`expr $interval - $minutos` 
+	horas=`expr $interval % 86400 / 3600` 
+	interval=`expr $interval - $horas` 
+	dias=`expr $interval % 604800 / 86400` 
+	interval=`expr $interval - $horas` 
+	semanas=`expr $interval / 604800` 
 
-	echo "... y queda hasta la fecha:" $(date -d@$until)
+	echo "... y queda hasta la fecha:" $(date -d@$fec_seg)
 	echo "----------------------------" 
-	echo "Segundos: " $seconds 
-	echo "Minutos:  " $minutes 
-	echo "Horas:    " $hours 
-	echo "Días:     " $days 
-	echo "Semanas:  " $weeks 
+	echo "Segundos: " $segundos 
+	echo "Minutos:  " $minutos 
+	echo "Horas:    " $horas 
+	echo "Días:     " $dias 
+	echo "Semanas:  " $semanas 
 
 #Barra de progreso
 	
 	echo -n "["
 
-	progress=$[$progress + 1]
-	if [ $total_time -lt 1 ] ; then
-		total_time=$[$hours * 3600 + $minutes * 60 + $seconds]
+	progreso=$[$progreso + 1]
+	if [ $tiempo_total -lt 1 ] ; then
+		tiempo_total=$[$horas * 3600 + $minutos * 60 + $segundos]
 	fi
 	
-	printf -v f "%$(echo $_R)s>" ; printf "%s\n" "${f// /=}"
-	_C=7
+	printf -v f "%$(echo $aument)s>" ; printf "%s\n" "${f// /-}]"
+	
 	tput cup 7 $col
 
-	tmp=$percent
-	percent=$[$progress * 100 / $total_time]
-	printf "]%d%%" $percent
-	change=$[$percent - $tmp]
+	tmp=$porcentaje
+	porcentaje=$[$progreso * 100 / $tiempo_total] 
+	porcentaje=$[$porcentaje]
+	change=$[$porcentaje - $tmp]
 
-	_R=$[ $col * $percent / 100 ]
+	aument=$[ $col * $porcentaje / 100 ]
 
+	printf "[%d%%]" $porcentaje
 	sleep 1
 
 done
